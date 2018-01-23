@@ -1,4 +1,13 @@
+.idea/
+*.iml
+*.iws
+*.eml
+out/
 .DS_Store
-lib
-node_modules
-*.log
+.svn
+log/*.log
+tmp/**
+node_modules/
+.sass-cache
+css/reveal.min.css
+js/reveal.min.js

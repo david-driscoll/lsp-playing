@@ -8,18 +8,17 @@
         "declaration": true,
         "stripInternal": true,
         "lib": ["es2016", "dom"],
-        "outDir": "lib",
+        "outDir": "monaco/lib",
         "strictNullChecks": true,
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
-        "noUnusedLocals": true,
         "preserveSymlinks": true
     },
     "include": [
-        "src"
+        "monaco/src"
     ],
     "files": [
-        "../node_modules/monaco-editor-core/monaco.d.ts"
+        "node_modules/monaco-editor-core/monaco.d.ts"
     ]
 }

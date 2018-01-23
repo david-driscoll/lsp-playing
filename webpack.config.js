@@ -1,8 +1,8 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const buildRoot = path.resolve(__dirname, "lib");
-const monacoEditorPath = '../node_modules/monaco-editor-core/dev/vs';
+const buildRoot = path.resolve(__dirname, "monaco/lib");
+const monacoEditorPath = 'node_modules/monaco-editor-core/dev/vs';
 
 module.exports = {
     entry: path.resolve(buildRoot, "main.js"),
@@ -11,7 +11,7 @@ module.exports = {
         path: buildRoot
     },
     module: {
-        noParse: /vscode-languageserver-types/
+        noParse: /vscode-languageserver-types/g
     },
     resolve: {
         extensions: ['.js'],

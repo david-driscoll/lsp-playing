@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-background-color="#fff">
+                <monaco-editor style="height: 280px; width: 960px;">
+                    <div class="monaco-code">
+                        window.location;
+                    </div>
+                </monaco-editor>
+                <monaco-editor style="height: 280px; width: 960px;"></monaco-editor>
+            </section>
+            <section>Slide 2</section>
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <!-- <script src="monaco/lib/bundle.js"></script> -->
+
+    <script>
+        // More info about config & dependencies:
+        // - https://github.com/hakimel/reveal.js#configuration
+        // - https://github.com/hakimel/reveal.js#dependencies
+        Reveal.initialize({
+            // width: "100%",
+            // height: "100%",
+            // margin: 0,
+            // minScale: 1,
+            // maxScale: 1,
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/search/search.js', async: true },
+                { src: 'plugin/zoom-js/zoom.js', async: true },
+                { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/monaco/index.js', async: true }
+            ],
+
+            // // Parallax background image
+            // parallaxBackgroundImage: 'css/parallax.jpg', // e.g. "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg"
+
+            // // Parallax background size
+            // parallaxBackgroundSize: '4000px 2600px', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
+
+            // // Number of pixels to move the parallax background per slide
+            // // - Calculated automatically unless specified
+            // // - Set to 0 to disable movement along an axis
+            // parallaxBackgroundHorizontal: 200,
+            // parallaxBackgroundVertical: 50
+        });
+    </script>
+
+    <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script>
+        require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' } });
+    </script>
+    <script src="plugin/monaco/monaco-bootstrap.js"></script>
+    <script src="monaco/lib/bundle.js"></script>
+
+</body>
+
+</html>
