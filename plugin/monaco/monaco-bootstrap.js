@@ -64,6 +64,8 @@ window.bootstrapEditor = function(element, code) {
                     language: config.language || 'typescript',
                     theme: config.theme || 'vs-dark',
                     fontSize: config.fontSize || 20,
+                    fontLigatures: true,
+                    fontFamily: 'Fira Code',
                 });
                 window.addEventListener("resize", () => editor.layout());
                 return editor;
