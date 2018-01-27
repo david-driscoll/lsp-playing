@@ -1,25 +1,63 @@
 var RevealMonaco =
     window.RevealMonaco ||
     (function() {
+        const KEYCODE_ESC = 9;
+        function indexOf(element) {
+            return Array.prototype.indexOf.call(element.parentElement.children, element);
+        }
+
+        const slideEditors = {};
+
         var options = Reveal.getConfig().monaco || {};
         options.base = options.base || 'plugin/monaco/';
 
         var currentEditors = [];
 
-        var indices = Reveal.getIndices();
-        loadEditors(Reveal.getCurrentSlide(), {
-            indexh: indices.h,
-            indexv: indices.v,
+        Reveal.getSlides().forEach((element, index) => {
+            const elements = element.querySelectorAll('monaco-editor');
+            const editors = [];
+            const active = false;
+            slideEditors[index] = {
+                elements,
+                editors,
+                active,
+            };
         });
+
+        function activateEditors(slide) {
+            if (!slide) return;
+            const index = indexOf(slide);
+            const context = slideEditors[index];
+            if (context.active) return;
+            const indices = Reveal.getIndices(slide);
+            loadEditors(slide, indices, context.editors);
+            context.active = true;
+        }
+
+        function deactivateEditors(slide) {
+            if (!slide) return;
+            const index = indexOf(slide);
+            const context = slideEditors[index];
+            unloadEditors(slide, context.editors);
+            context.active = false;
+        }
+
+        activateEditors(Reveal.getCurrentSlide());
 
         Reveal.addEventListener('slidechanged', function(event) {
-            if (event.previousSlide) unloadEditors(event.previousSlide);
-            if (event.currentSlide) loadEditors(event.currentSlide, event);
+            const direction =
+                indexOf(event.currentSlide) > indexOf(event.previousSlide) ? 1 : -1;
+            const lastSlide = Reveal.getSlide(
+                indexOf(event.previousSlide) - 1 * direction
+            );
+            deactivateEditors(lastSlide);
+            activateEditors(event.currentSlide);
+            activateEditors(Reveal.getSlide(indexOf(event.currentSlide) + 1 * direction));
         });
 
-        function loadEditors(element, event) {
+        function loadEditors(element, event, editors) {
             var elements = element.querySelectorAll('monaco-editor');
-            elements.forEach(function(element, i) {
+            Array.from(elements).reduce(function(promise, element, i) {
                 element.setAttribute(
                     'theme',
                     element.getAttribute('theme') || options.theme
@@ -31,6 +69,9 @@ var RevealMonaco =
                 element.className = 'stretch';
                 element.id = 'monaco-' + event.indexh + '-' + event.indexv + '-' + i;
 
+                let resolve;
+                const promise2 = new Promise(r => resolve = r);
+
                 var iframe = document.createElement('iframe');
                 iframe.className = 'monaco-frame';
                 iframe.src = options.base + 'monaco-container.html';
@@ -41,18 +82,27 @@ var RevealMonaco =
                             extractCode(element)
                         )
                         .then(editor => {
-                            currentEditors.push(currentEditors);
-                        });
+                            editors.push(editor);
+
+                            editor.onKeyUp(e => {
+                                console.log(e);
+                                if (e.keyCode === KEYCODE_ESC) {
+                                    document.activeElement.blur();
+                                }
+                            });
+                        })
+                        .then(resolve);
                 };
-                element.appendChild(iframe);
-            });
+
+                return promise.then(() => element.appendChild(iframe)).then(promise2);
+            }, Promise.resolve());
         }
 
-        function unloadEditors(element) {
-            currentEditors.forEach(editor => {
+        function unloadEditors(element, editors) {
+            editors.forEach(editor => {
                 editor.dispose();
             });
-            currentEditors = [];
+            editors = [];
             var elements = element.querySelectorAll('monaco-editor');
             elements.forEach(function(element) {
                 element.querySelectorAll('iframe.monaco-frame').forEach(function(el) {

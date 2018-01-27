@@ -74,6 +74,7 @@
 
 Object.defineProperty(exports, "__esModule", { value: true });
 window.addEventListener('load', function (x) {
+    var KEYCODE_ESC = 9;
     window.require(['vs/editor/editor.main'], function () {
         var ReconnectingWebSocket = __webpack_require__(2);
         monaco.editor.onDidCreateEditor(function (editor) {

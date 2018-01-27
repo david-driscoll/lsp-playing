@@ -12,6 +12,7 @@ import {
 } from 'monaco-languageclient';
 
 window.addEventListener('load', x => {
+
     (window as any).require(['vs/editor/editor.main'], () => {
         const ReconnectingWebSocket = require('reconnecting-websocket');
 
