@@ -9,7 +9,7 @@ import * as url from "url";
 import * as net from "net";
 import * as express from "express";
 import * as rpc from "vscode-ws-jsonrpc";
-import { launch } from "./json-server-launcher";
+import { launch } from "./launcher";
 
 process.on('uncaughtException', function (err: any) {
     console.error('Uncaught Exception: ', err.toString());
@@ -31,7 +31,8 @@ const wss = new ws.Server({
 });
 server.on('upgrade', (request: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
     const pathname = request.url ? url.parse(request.url).pathname : undefined;
-    if (pathname === '/sampleServer') {
+    if (pathname!.startsWith('/lsp/')) {
+        const type = pathname!.substring('/lsp/'.length);
         wss.handleUpgrade(request, socket, head, webSocket => {
             const socket: rpc.IWebSocket = {
                 send: content => webSocket.send(content, error => {
@@ -46,9 +47,9 @@ server.on('upgrade', (request: http.IncomingMessage, socket: net.Socket, head: B
             };
             // launch the server when the web socket is opened
             if (webSocket.readyState === webSocket.OPEN) {
-                launch(socket);
+                launch(socket, type);
             } else {
-                webSocket.on('open', () => launch(socket));
+                webSocket.on('open', () => launch(socket, type));
             }
         });
     }

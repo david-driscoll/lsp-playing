@@ -11,12 +11,13 @@ module.exports = {
         path: buildRoot
     },
     module: {
-        noParse: /vscode-languageserver-types/g
+        noParse: /(vscode-languageserver-types|glob-to-regexp)/g
     },
     resolve: {
         extensions: ['.js'],
         alias: {
-            'vs': path.resolve(buildRoot, monacoEditorPath)
+            'vs': path.resolve(buildRoot, monacoEditorPath),
+            'glob-to-regexp': path.resolve(__dirname, 'node_modules/glob-to-regexp/index.js')
         }
     },
     devtool: 'source-map',

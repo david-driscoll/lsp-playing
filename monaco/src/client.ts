@@ -9,13 +9,12 @@ import {
     ErrorAction,
     createMonacoServices,
     createConnection,
-} from 'monaco-languageclient';
+} from './languageclient';
+import { DocumentSelector } from './languageclient';
+import configs from './configs';
 
 window.addEventListener('load', x => {
-
     (window as any).require(['vs/editor/editor.main'], () => {
-        const ReconnectingWebSocket = require('reconnecting-websocket');
-
         monaco.editor.onDidCreateEditor(editor => {
             editor.getDomNode();
         });
@@ -34,75 +33,76 @@ window.addEventListener('load', x => {
             aliases: ['JSON', 'json'],
             mimetypes: ['application/json'],
         });
-
-        // create Monaco editor
-        const value = `{
-    "$schema": "http://json.schemastore.org/coffeelint",
-    "line_endings": "unix"
-}`;
-        // const editor = monaco.editor.create(document.getElementById('container')!, {
-        //     model: monaco.editor.createModel(
-        //         value,
-        //         'json',
-        //         monaco.Uri.parse('inmemory://model.json')
-        //     ),
-        //     glyphMargin: true,
-        // });
-
-        // create the web socket
-        // const url = createUrl('/sampleServer');
-        // const webSocket = createWebSocket(url);
-        // listen when the web socket is opened
-        // listen({
-        //     webSocket,
-        //     onConnection: connection => {
-        //         // create and start the language client
-        //         const languageClient = createLanguageClient(connection);
-        //         const disposable = languageClient.start();
-        //         connection.onClose(() => disposable.dispose());
-        //     },
-        // });
-
-        // const services = createMonacoServices(editor);
-        // function createLanguageClient(connection: MessageConnection): BaseLanguageClient {
-        //     return new BaseLanguageClient({
-        //         name: 'Sample Language Client',
-        //         clientOptions: {
-        //             // use a language id as a document selector
-        //             documentSelector: ['json'],
-        //             // disable the default error handler
-        //             errorHandler: {
-        //                 error: () => ErrorAction.Continue,
-        //                 closed: () => CloseAction.DoNotRestart,
-        //             },
-        //         },
-        //         services,
-        //         // create a language client connection from the JSON RPC connection on demand
-        //         connectionProvider: {
-        //             get: (errorHandler, closeHandler) => {
-        //                 return Promise.resolve(
-        //                     createConnection(connection, errorHandler, closeHandler)
-        //                 );
-        //             },
-        //         },
-        //     });
-        // }
-
-        function createUrl(path: string): string {
-            const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-            return `${protocol}://${location.host}${path}`;
-        }
-
-        function createWebSocket(url: string): WebSocket {
-            const socketOptions = {
-                maxReconnectionDelay: 10000,
-                minReconnectionDelay: 1000,
-                reconnectionDelayGrowFactor: 1.3,
-                connectionTimeout: 10000,
-                maxRetries: Infinity,
-                debug: false,
-            };
-            return new ReconnectingWebSocket(url, undefined, socketOptions);
-        }
+        monaco.languages.register({
+            id: 'csharp',
+            extensions: ['.cs', '.csx'],
+            aliases: ['omnisharp'],
+        });
     });
 });
+
+(window as any).configureLsp = function configureLsp(
+    editor: monaco.editor.IStandaloneCodeEditor,
+    name: string,
+    code: string
+) {
+    const config = configs[name];
+    const ReconnectingWebSocket = require('reconnecting-websocket');
+    const url = createUrl(`/lsp/${name}`);
+    const webSocket = createWebSocket(url);
+    listen({
+        webSocket,
+        onConnection: connection => {
+            // create and start the language client
+            const languageClient = createLanguageClient(connection);
+            const disposable = languageClient.start();
+            // languageClient.onReady().then(() => {
+            //     editor.setValue(code);
+            // });
+            connection.onClose(() => disposable.dispose());
+        },
+    });
+
+    const services = createMonacoServices(editor);
+    function createLanguageClient(connection: MessageConnection): BaseLanguageClient {
+        return new BaseLanguageClient({
+            name,
+            clientOptions: {
+                // use a language id as a document selector
+                documentSelector: [config.language],
+                // disable the default error handler
+                errorHandler: {
+                    error: () => ErrorAction.Continue,
+                    closed: () => CloseAction.DoNotRestart,
+                },
+            },
+            services,
+            // create a language client connection from the JSON RPC connection on demand
+            connectionProvider: {
+                get: (errorHandler, closeHandler) => {
+                    return Promise.resolve(
+                        createConnection(connection, errorHandler, closeHandler)
+                    );
+                },
+            },
+
+        });
+    }
+
+    function createUrl(path: string): string {
+        const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+        return `${protocol}://${location.host}${path}`;
+    }
+
+    function createWebSocket(url: string): WebSocket {
+        const socketOptions = {
+            maxReconnectionDelay: 10000,
+            minReconnectionDelay: 1000,
+            reconnectionDelayGrowFactor: 1.3,
+            connectionTimeout: 10000,
+            maxRetries: Infinity,
+            debug: false,
+        };
+        return new ReconnectingWebSocket(url, undefined, socketOptions);
+    }
+};

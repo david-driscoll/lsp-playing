@@ -8,7 +8,7 @@ var ws = require("ws");
 var path = require("path");
 var url = require("url");
 var express = require("express");
-var json_server_launcher_1 = require("./json-server-launcher");
+var launcher_1 = require("./launcher");
 process.on('uncaughtException', function (err) {
     console.error('Uncaught Exception: ', err.toString());
     if (err.stack) {
@@ -28,7 +28,8 @@ var wss = new ws.Server({
 });
 server.on('upgrade', function (request, socket, head) {
     var pathname = request.url ? url.parse(request.url).pathname : undefined;
-    if (pathname === '/sampleServer') {
+    if (pathname.startsWith('/lsp/')) {
+        var type_1 = pathname.substring('/lsp/'.length);
         wss.handleUpgrade(request, socket, head, function (webSocket) {
             var socket = {
                 send: function (content) { return webSocket.send(content, function (error) {
@@ -43,10 +44,10 @@ server.on('upgrade', function (request, socket, head) {
             };
             // launch the server when the web socket is opened
             if (webSocket.readyState === webSocket.OPEN) {
-                json_server_launcher_1.launch(socket);
+                launcher_1.launch(socket, type_1);
             }
             else {
-                webSocket.on('open', function () { return json_server_launcher_1.launch(socket); });
+                webSocket.on('open', function () { return launcher_1.launch(socket, type_1); });
             }
         });
     }

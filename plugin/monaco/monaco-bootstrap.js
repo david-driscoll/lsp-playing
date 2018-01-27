@@ -1,7 +1,8 @@
 /// <reference path="../../node_modules/monaco-editor/monaco.d.ts" />
 require.config({ paths: { vs: '../../node_modules/monaco-editor/min/vs' } });
 
-window.bootstrapEditor = function(element, code) {
+window.bootstrapEditor = function(element, context) {
+    const { code, reference, language, theme, fontSize, lsp, filename } = context;
     return new Promise((resolve, reject) => {
         require(['vs/editor/editor.main'], function() {
             var config = Object.assign(
@@ -14,7 +15,7 @@ window.bootstrapEditor = function(element, code) {
                     promises: [],
                 }
             );
-            var referenceString = element.getAttribute('reference');
+            var referenceString = reference;
             if (referenceString) {
                 try {
                     var references = JSON.parse(referenceString);
@@ -50,9 +51,10 @@ window.bootstrapEditor = function(element, code) {
                 }
             }
             config.code = code;
-            config.language = element.getAttribute('language') || config.language;
-            config.theme = element.getAttribute('theme') || config.theme;
-            config.fontSize = element.getAttribute('fontSize') || config.fontSize;
+            config.language = language;
+            config.theme = theme;
+            config.fontSize = fontSize;
+            config.filename = filename;
 
             return Promise.all(config.promises)
                 .then(load)
@@ -60,14 +62,21 @@ window.bootstrapEditor = function(element, code) {
 
             function load() {
                 var editor = monaco.editor.create(element, {
-                    value: config.code || '',
-                    language: config.language || 'typescript',
                     theme: config.theme || 'vs-dark',
                     fontSize: config.fontSize || 20,
                     fontLigatures: true,
                     fontFamily: 'Fira Code',
+                    model: monaco.editor.createModel(
+                        config.code || '',
+                        config.language || 'typescript',
+                        //`file:///${config.filename}`
+                        `file://${window.rootDir}/${config.filename}`
+                    )
                 });
-                window.addEventListener("resize", () => editor.layout());
+                window.addEventListener('resize', () => editor.layout());
+                if (lsp) {
+                    window.configureLsp(editor, lsp, code);
+                }
                 return editor;
             }
 

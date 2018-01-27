@@ -58,19 +58,21 @@ var RevealMonaco =
         function loadEditors(element, event, editors) {
             var elements = element.querySelectorAll('monaco-editor');
             Array.from(elements).reduce(function(promise, element, i) {
-                element.setAttribute(
-                    'theme',
-                    element.getAttribute('theme') || options.theme
-                );
-                element.setAttribute(
-                    'fontSize',
-                    element.getAttribute('fontSize') || options.fontSize
-                );
                 element.className = 'stretch';
                 element.id = 'monaco-' + event.indexh + '-' + event.indexv + '-' + i;
 
                 let resolve;
-                const promise2 = new Promise(r => resolve = r);
+                const promise2 = new Promise(r => (resolve = r));
+                const lsp = element.getAttribute('lsp') || '';
+                const context = {
+                    ...options,
+                    code: extractCode(element),
+                    lsp,
+                    filename: element.getAttribute('filename')
+                };
+                context.theme = element.getAttribute('theme') || options.theme;
+                context.fontSize = element.getAttribute('fontSize') || options.fontSize;
+                context.language = element.getAttribute('language') || options.language;
 
                 var iframe = document.createElement('iframe');
                 iframe.className = 'monaco-frame';
@@ -79,13 +81,12 @@ var RevealMonaco =
                     iframe.contentWindow
                         .bootstrapEditor(
                             iframe.contentDocument.getElementById('monaco-container'),
-                            extractCode(element)
+                            context
                         )
                         .then(editor => {
                             editors.push(editor);
 
                             editor.onKeyUp(e => {
-                                console.log(e);
                                 if (e.keyCode === KEYCODE_ESC) {
                                     document.activeElement.blur();
                                 }
