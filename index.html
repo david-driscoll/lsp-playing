@@ -114,17 +114,11 @@
                 </div>
             </section>
             <section>
-                <h2>OmniSharp</h2>
-
-
-                <monaco-editor style="height: 330px; width: 960px;" language="csharp" lsp="omnisharp" filename="file.csx" url="monaco/server/root/file.csx" />
-            </section>
-            <section>
                 <h2>What is the
                     <br /> Language Server Protocol?</h2>
 
                 <div class="fragment">
-                    <img src="img/lspimage.png" />
+                    <img data-src="img/lspimage.png" />
                 </div>
 
                 <aside class="notes" data-markdown>
@@ -139,14 +133,18 @@
             <section>
                 <h2>Why?</h2>
                 <div class="fragment" style="margin: 40px;">
-                    <img src="img/java.png" height="100" />
-                    <img src="img/arrow.png" height="50" style="margin: 40px 15px;" />
-                    <img src="img/eclipse.png" height="100" />
+                    <img data-src="img/java.png" height="120" />
+                    <span class="fragment">
+                        <img data-src="img/arrow.png" height="60" style="margin: 50px 15px;" />
+                        <img data-src="img/eclipse.png" height="120" />
+                    </span>
                 </div>
                 <div class="fragment">
-                    <img src="img/dotnet.png" height="100" />
-                    <img src="img/arrow.png" height="50" style="margin: 40px 15px;" />
-                    <img src="img/visualstudio.png" height="100" />
+                    <img data-src="img/dotnet.png" height="120" />
+                    <span class="fragment">
+                        <img data-src="img/arrow.png" height="60" style="margin: 50px 15px;" />
+                        <img data-src="img/visualstudio.png" height="120" />
+                    </span>
                 </div>
                 <aside class="notes" data-markdown>
                     <textarea data-template>
@@ -163,25 +161,31 @@
                 <h2>What if...</h2>
 
                 <div class="fragment">
-                    <img src="img/eclipse.png" height="100" />
-                    <img src="img/arrow.png" height="50" style="margin: 40px 15px;" />
-                    <img src="img/dotnet.png" height="100" />
+                    <img data-src="img/eclipse.png" height="120" />
+                    <span class="fragment">
+                        <img data-src="img/arrow.png" height="60" style="margin: 50px 15px;" />
+                        <img data-src="img/dotnet.png" height="120" />
+                    </span>
                 </div>
                 <div class="fragment" style="margin: 40px;">
-                    <img src="img/visualstudio.png" height="100" />
-                    <img src="img/arrow.png" height="50" style="margin: 40px 15px;" />
-                    <img src="img/java.png" height="100" />
+                    <img data-src="img/visualstudio.png" height="120" />
+                    <span class="fragment">
+                        <img data-src="img/arrow.png" height="60" style="margin: 50px 15px;" />
+                        <img data-src="img/java.png" height="120" />
+                    </span>
                 </div>
                 <div class="fragment" style="margin: 40px;">
-                    <img src="img/emacs.png" height="100" />
-                    <img src="img/arrow.png" height="50" style="margin: 40px 15px;" />
-                    <div style="font-size: 100px;
+                    <img data-src="img/emacs.png" height="120" />
+                    <span class="fragment">
+                        <img data-src="img/arrow.png" height="60" style="margin: 50px 15px;" />
+                        <div style="font-size: 120px;
                         line-height: 100px;
                         font-weight: 800;
                         display: inline-block;
-                        height: 100px;
-                        margin-top: 20px;
+                        height: 120px;
+                        margin-top: 30px;
                         vertical-align: top;">?</div>
+                    </span>
                 </div>
 
                 <aside class="notes" data-markdown>
@@ -201,7 +205,7 @@
             </section>
 
             <section>
-                <img src="img/notepad.png" />
+                <img data-src="img/notepad.png" />
                 <aside class="notes" data-markdown>
                     <textarea data-template>
                     You might as well be using notepad
@@ -213,15 +217,127 @@
                     </textarea>
                 </aside>
             </section>
-            <section>Slide 2</section>
-            <section>Slide 2</section>
-            <section>Slide 2</section>
+
             <section>
+                <h2>Example (OmniSharp)</h2>
+
+                <monaco-editor style="height: 330px; width: 960px;" language="csharp" lsp="omnisharp" filename="file.csx" url="monaco/server/root/file.csx"
+                />
+            </section>
+            <section>
+                <h2>Example (TypeScript)</h2>
+
                 <monaco-editor style="height: 330px; width: 960px;">
                     <div class="monaco-code">
                         window.location;
                     </div>
                 </monaco-editor>
+            </section>
+
+            <section>
+                <h3>What Editors can I use?</h3>
+
+                <img data-src="img/vscode.png" style="height: 200px;" class="fragment" data-fragment-index="1" />
+                <img data-src="img/eclipse.png" style="height: 200px;" class="fragment" data-fragment-index="3" />
+                <img data-src="img/emacs.png" style="height: 200px;" class="fragment" data-fragment-index="5" />
+                <img data-src="img/visualstudio.png" style="height: 200px;" class="fragment" data-fragment-index="7" />
+                <img data-src="img/eclipse-che.png" style="height: 200px;" class="fragment" data-fragment-index="2" />
+                <img data-src="img/atom.png" style="height: 200px;" class="fragment" data-fragment-index="6" />
+                <img data-src="img/vim.png" style="height: 200px;" class="fragment" data-fragment-index="4" />
+
+                <aside class="notes" data-markdown>
+                    <textarea data-template>
+                        Varied Set of editors
+
+                        * VSCode
+                        * Monaco
+                        * Atom
+                        * Vim
+                        * Emacs
+                        * Eclipse IDE
+                        * Eclipse Che
+                        * Visual Studio
+                        </textarea>
+                </aside>
+            </section>
+            <section>
+                <h3>Language Support</h3>
+
+                <ul style="display: inline-block; width: 40%;">
+                    <li>C#</li>
+                    <li>C++</li>
+                    <li>HTML</li>
+                    <li>CSS/LESS/SCSS</li>
+                    <li>Json</li>
+                    <li>PHP</li>
+                    <li>Java</li>
+                    <li>SQL</li>
+                    <li>Go</li>
+                </ul>
+                <ul style="display: inline-block; width: 40%;">
+                    <li>Rust</li>
+                    <li>Scala</li>
+                    <li>TypeScript</li>
+                    <li>JavaScript</li>
+                    <li>Docker</li>
+                    <li>Lua</li>
+                    <li>Ruby</li>
+                    <li>Elixir</li>
+                    <li>Groovy</li>
+                </ul>
+
+                <aside class="notes" data-markdown>
+                    <textarea data-template>
+                    Virtually any language, DSL, or anything you can think of
+                    </textarea>
+                </aside>
+            </section>
+            <section>
+                <h2>Writing a Language Server</h2>
+                <a href="https://microsoft.github.io/language-server-protocol/specification">https://microsoft.github.io/language-server-protocol/specification</a>
+                <ul>
+                    <li>Protocol defines operations</li>
+                    <li>Server and Client negotiate capabilities</li>
+                    <li>JSON Rpc</li>
+                    <li>Bi-directional channel</li>
+                    <li>Transports
+                        <ul>
+                            <li>Stdio</li>
+                            <li>WebSocket</li>
+                            <li>Socket</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <aside class="notes" data-markdown>
+                    <textarea data-template>
+                        Spec for the client defines the context of what is happening in the editor
+                        Spec for the server defines the responses and parts that are supported by the client
+                    </textarea>
+                </aside>
+            </section>
+            <section>
+                <h2>SDKs</h2>
+                <ul>
+                    <li>NodeJS<ul>
+                        <li>TypeScript</li>
+                        <li>JavaScript</li>
+                    </ul></li>
+                    <li>Java</li>
+                    <li>C#</li>
+                </ul>
+
+                <aside class="notes" data-markdown>
+                    <textarea data-template>
+                    Virtually any language, DSL, or anything you can think of
+                    </textarea>
+                </aside>
+            </section>
+            <section><h2>but... why?</h2></section>
+            <section>Slide 2</section>
+            <section>Slide 2</section>
+            <section>Slide 2</section>
+            <section>
                 <monaco-editor style="height: 330px; width: 960px;"></monaco-editor>
             </section>
             <section data-background-image="img/demo.png">Demo</section>
@@ -268,5 +384,7 @@
     </script>
 
 </body>
+
+
 
 </html>

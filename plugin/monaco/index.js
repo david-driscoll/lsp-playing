@@ -119,16 +119,19 @@ var RevealMonaco =
 
         async function extractCode(element) {
             var url = element.getAttribute('url');
-            let code =
-                element.getAttribute('code') ||
-                (await fetch(url).then(
+            let code;
+            if (url) {
+                code = await fetch(url).then(
                     function(c) {
                         return c.text();
                     },
                     function(e) {
                         return "Error loading '" + url + "': " + JSON.stringify(e);
                     }
-                ));
+                );
+            } else {
+                code = element.getAttribute('code') || '';
+            }
             if (code) {
                 code = code
                     .replace(/\\n/g, '\n')
