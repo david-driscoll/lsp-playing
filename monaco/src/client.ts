@@ -9,6 +9,7 @@ import {
     ErrorAction,
     createMonacoServices,
     createConnection,
+    DidOpenTextDocumentNotification,
 } from './languageclient';
 import { DocumentSelector } from './languageclient';
 import configs from './configs';
@@ -56,9 +57,24 @@ window.addEventListener('load', x => {
             // create and start the language client
             const languageClient = createLanguageClient(connection);
             const disposable = languageClient.start();
-            // languageClient.onReady().then(() => {
-            //     editor.setValue(code);
-            // });
+            languageClient.onReady().then(() => {
+                setTimeout(() => {
+                    const model = editor.getModel();
+                    languageClient.sendNotification(
+                        DidOpenTextDocumentNotification.type as any,
+                        {
+                            textDocument: {
+                                uri: model.uri,
+                                languageId: config.language,
+                                version: 0,
+                                text: model.getValue(),
+                            },
+                        }
+                    );
+                    // editor.setModel(model);
+                }, 1000);
+            });
+
             connection.onClose(() => disposable.dispose());
         },
     });
@@ -85,7 +101,6 @@ window.addEventListener('load', x => {
                     );
                 },
             },
-
         });
     }
 

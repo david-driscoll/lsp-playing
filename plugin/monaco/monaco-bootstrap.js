@@ -69,7 +69,6 @@ window.bootstrapEditor = function(element, context) {
                     model: monaco.editor.createModel(
                         config.code || '',
                         config.language || 'typescript',
-                        //`file:///${config.filename}`
                         `file://${window.rootDir}/${config.filename}`
                     )
                 });

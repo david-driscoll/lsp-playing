@@ -57,7 +57,7 @@ var RevealMonaco =
 
         function loadEditors(element, event, editors) {
             var elements = element.querySelectorAll('monaco-editor');
-            Array.from(elements).reduce(function(promise, element, i) {
+            Array.from(elements).reduce((promise, element, i) => {
                 element.className = 'stretch';
                 element.id = 'monaco-' + event.indexh + '-' + event.indexv + '-' + i;
 
@@ -66,9 +66,8 @@ var RevealMonaco =
                 const lsp = element.getAttribute('lsp') || '';
                 const context = {
                     ...options,
-                    code: extractCode(element),
                     lsp,
-                    filename: element.getAttribute('filename')
+                    filename: element.getAttribute('filename'),
                 };
                 context.theme = element.getAttribute('theme') || options.theme;
                 context.fontSize = element.getAttribute('fontSize') || options.fontSize;
@@ -78,19 +77,25 @@ var RevealMonaco =
                 iframe.className = 'monaco-frame';
                 iframe.src = options.base + 'monaco-container.html';
                 iframe.onload = () => {
-                    iframe.contentWindow
-                        .bootstrapEditor(
-                            iframe.contentDocument.getElementById('monaco-container'),
-                            context
-                        )
-                        .then(editor => {
-                            editors.push(editor);
+                    extractCode(element)
+                        .then(code => {
+                            context.code = code;
+                            return iframe.contentWindow
+                                .bootstrapEditor(
+                                    iframe.contentDocument.getElementById(
+                                        'monaco-container'
+                                    ),
+                                    context
+                                )
+                                .then(editor => {
+                                    editors.push(editor);
 
-                            editor.onKeyUp(e => {
-                                if (e.keyCode === KEYCODE_ESC) {
-                                    document.activeElement.blur();
-                                }
-                            });
+                                    editor.onKeyUp(e => {
+                                        if (e.keyCode === KEYCODE_ESC) {
+                                            document.activeElement.blur();
+                                        }
+                                    });
+                                });
                         })
                         .then(resolve);
                 };
@@ -112,42 +117,35 @@ var RevealMonaco =
             });
         }
 
-        function extractCode(element) {
-            var code;
+        async function extractCode(element) {
             var url = element.getAttribute('url');
-            if (url) {
-                config.promises.push(
-                    xhr('../../' + url).then(
-                        function(c) {
-                            config.code = c.responseText;
-                        },
-                        function(e) {
-                            config.code =
-                                "Error loading '" + url + "': " + JSON.stringify(e);
-                        }
-                    )
-                );
-                code = '(Loading ' + url + '...)';
-            } else {
-                code = element.getAttribute('code');
-                if (code) {
-                    code = code
-                        .replace(/\\n/g, '\n')
-                        .replace(/\\r/g, '\r')
-                        .replace(/\\t/g, '\t');
-                } else {
-                    var codeElement = element.querySelectorAll('.monaco-code')[0];
-                    if (codeElement) {
-                        code = codeElement.innerHTML.trim();
-                    } else {
-                        console.warn(
-                            'Monaco Code editor with id of ' +
-                                element.id +
-                                ' has no code to display. Either use the "code" attribute on "#' +
-                                element.id +
-                                '" or create a child span with class "monaco-code" to provide code for the editor.'
-                        );
+            let code =
+                element.getAttribute('code') ||
+                (await fetch(url).then(
+                    function(c) {
+                        return c.text();
+                    },
+                    function(e) {
+                        return "Error loading '" + url + "': " + JSON.stringify(e);
                     }
+                ));
+            if (code) {
+                code = code
+                    .replace(/\\n/g, '\n')
+                    .replace(/\\r/g, '\r')
+                    .replace(/\\t/g, '\t');
+            } else {
+                var codeElement = element.querySelectorAll('.monaco-code')[0];
+                if (codeElement) {
+                    code = codeElement.innerHTML.trim();
+                } else {
+                    console.warn(
+                        'Monaco Code editor with id of ' +
+                            element.id +
+                            ' has no code to display. Either use the "code" attribute on "#' +
+                            element.id +
+                            '" or create a child span with class "monaco-code" to provide code for the editor.'
+                    );
                 }
             }
             return code;

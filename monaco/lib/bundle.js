@@ -11618,9 +11618,20 @@ window.configureLsp = function configureLsp(editor, name, code) {
             // create and start the language client
             var languageClient = createLanguageClient(connection);
             var disposable = languageClient.start();
-            // languageClient.onReady().then(() => {
-            //     editor.setValue(code);
-            // });
+            languageClient.onReady().then(function () {
+                setTimeout(function () {
+                    var model = editor.getModel();
+                    languageClient.sendNotification(languageclient_1.DidOpenTextDocumentNotification.type, {
+                        textDocument: {
+                            uri: model.uri,
+                            languageId: config.language,
+                            version: 0,
+                            text: model.getValue(),
+                        },
+                    });
+                    // editor.setModel(model);
+                }, 1000);
+            });
             connection.onClose(function () { return disposable.dispose(); });
         },
     });
